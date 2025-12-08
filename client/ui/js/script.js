@@ -409,6 +409,12 @@ window.addEventListener('message', async function (event) {
             return;
         }
 
+        if (currentCodeplug.zones[currentZoneIndex].channels[currentChannelIndex].receiveOnly === true) {
+            console.debug("Cannot tx, rx only");
+            bonk();
+            return;
+        }
+
         if (isReceiving) {
             console.debug("Receiving, not txing");
             bonk();
