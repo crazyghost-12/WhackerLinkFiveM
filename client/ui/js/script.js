@@ -659,8 +659,8 @@ async function powerOn(reReg) {
         }
 
         if (!isScannerModel()) {
-            // responsiveVoice.speak(`${currentZone.name}`, `US English Female`, {rate: .8});
-            // responsiveVoice.speak(`${currentChannel.name}`, `US English Female`, {rate: .8});
+            responsiveVoice.speak(`${currentZone.name_announce}`, `US English Female`, {rate: .8});
+            responsiveVoice.speak(`${currentChannel.name_announce}`, `US English Female`, {rate: .8});
         }
 
         updateDisplay();
