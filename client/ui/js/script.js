@@ -658,9 +658,27 @@ async function powerOn(reReg) {
             await displayBootScreen(bootScreenMessages);
         }
 
-        if (!isScannerModel()) {
-            responsiveVoice.speak(`${currentZone.name_announce}`, `US English Female`, {rate: .8});
-            responsiveVoice.speak(`${currentChannel.name_announce}`, `US English Female`, {rate: .8});
+        if (!isScannerModel() && currentCodeplug.isAnnounceZoneChannelTalkgroups === true) {
+            fetch('/configs/config.yml')
+              .then(response => response.text())
+              .then(yamlText => {
+                const lines = yamlText.split('\n');
+                for (const line of lines) {
+                  const matchApiKey = line.match(/^\s*responsiveVoiceApiKey\s*:\s+\S*$/i);
+                  const apiKey = matchApiKey.replace("responsiveVoiceApiKey: ", "")
+                  if (apiKey !== null && apiKey !== "") {
+                    responsiveVoice.speak(`${currentZone.name_announce}`, `US English Female`, {rate: .8});
+                    responsiveVoice.speak(`${currentChannel.name_announce}`, `US English Female`, {rate: .8});
+                    return;
+                  } else {
+                      console.error('responsiveVoiceApiKey not set in config.yml);
+                      return;
+                  }
+                }
+              })
+              .catch(err => {
+                console.warn('Could not load config.yml, defaulting to disabled zone/channel announcements:', err);
+              });
         }
 
         updateDisplay();
