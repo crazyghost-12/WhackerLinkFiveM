@@ -2,5 +2,4 @@ siteBlips: true
 disableAnimations: false
 # Beep volume reduction factor. 0.0 is full volume, 1.0 is silent
 beepVolumeReduction: 0.6
-announceZoneChannelChanges: false
 responsveVoiceApiKey: "add your api key here"
