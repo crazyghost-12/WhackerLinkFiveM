@@ -5,6 +5,7 @@ radioWide:
   serialNumber: "123ABC1234"
   model: "APX6000"
   inCarMode: "APX4500"
+  isAnnonceZoneChannelChanges: false
 
 systems:
   - name: "System 1"
