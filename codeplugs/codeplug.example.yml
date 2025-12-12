@@ -5,7 +5,6 @@ radioWide:
   serialNumber: "123ABC1234"
   model: "APX6000"
   inCarMode: "APX4500"
-  announceZoneChannelChanges: false # Make sure you add your own API key in the main config file before enabling this
 
 systems:
   - name: "System 1"
