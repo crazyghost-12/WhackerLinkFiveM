@@ -102,19 +102,20 @@ function socketOpen() {
 }
 
 let beepVolumeReduction = 0.6; // default value
+let isResponsiveVoiceApiKeySet = false; // default value
 fetch('/configs/config.yml')
   .then(response => response.text())
   .then(yamlText => {
     const lines = yamlText.split('\n');
     for (const line of lines) {
       const matchBeepVolume = line.match(/^\s*beepVolumeReduction\s*:\s*([0-9.]+)\s*$/i);
+      const matchApiKeyValue = line.match(/^\s*responsiveVoiceApiKey\s*:\s+\S*$/i);
       if (matchBeepVolume) {
         let parsed = parseFloat(matchBeepVolume[1]);
         if (isNaN(parsed)) {
           console.error('beepVolumeReduction in config.yml is not a number. Using default value.');
           return;
-        }
-        if (parsed < 0.0) {
+        } if (parsed < 0.0) {
           console.error('beepVolumeReduction in config.yml is less than 0. Clamping to 0.');
           beepVolumeReduction = 0.0;
         } else if (parsed > 1.0) {
@@ -124,31 +125,19 @@ fetch('/configs/config.yml')
           beepVolumeReduction = parsed;
         }
       }
-    }
-  })
-  .catch(err => {
-    console.warn('Could not load config.yml, using default config values:', err);
-  });
-
-let isResponsiveVoiceApiKeySet = false; // default value
-fetch('/configs/config.yml')
-  .then(response => response.text())
-  .then(yamlText => {
-    const lines = yamlText.split('\n');
-    for (const line of lines) {
-      const matchApiKeyValue = line.match(/^\s*responsiveVoiceApiKey\s*:\s+\S*$/i);
-      const apiKey = matchApiKeyValue.replace("responsiveVoiceApiKey: ", "");
-      if (apiKey !== null && apiKey !== "") {
-        isResponsiveVoiceApiKeySet = true
-        console.log('Responsive voice enabled);
+      if (matchApiKeyValue) {
+        let apiKey = matchApiKeyValue.replace("responsiveVoiceApiKey: ", "");
+        if (apiKey !== null && apiKey !== "") {
+          isResponsiveVoiceApiKeySet = true
+          console.log('Responsive voice enabled')
         } else {
-          console.log('Responsive voice API key not set, disabled);
+          console.log('Responsive voice API key not set, disabled')
         }
       }
     }
   })
   .catch(err => {
-    console.warn('Could not load config.yml, defaulting to disbaled responsive voice:', err);
+    console.warn('Could not load config.yml, using default config values:', err);
   });
 
 
@@ -671,9 +660,9 @@ async function powerOn(reReg) {
             bootImage.style.display = 'none';
         } else {
             const bootScreenMessages = [
-                {text: "", duration: 0, line: "line1"},
-                {text: "", duration: 0, line: "line3"},
-                {text: HOST_VERSION, duration: 1500, line: "line2"},
+                {text: "", duration: 0, : "line1"},
+                {text: "", duration: 0, : "line3"},
+                {text: HOST_VERSION, duration: 1500, : "line2"},
                 {text: radioModel, duration: 1500, line: "line2"}
             ];
 
