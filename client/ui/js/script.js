@@ -130,6 +130,28 @@ fetch('/configs/config.yml')
     console.warn('Could not load config.yml, using default config values:', err);
   });
 
+let isResponsiveVoiceApiKeySet = false; // default value
+fetch('/configs/config.yml')
+  .then(response => response.text())
+  .then(yamlText => {
+    const lines = yamlText.split('\n');
+    for (const line of lines) {
+      const matchApiKeyValue = line.match(/^\s*responsiveVoiceApiKey\s*:\s+\S*$/i);
+      const apiKey = matchApiKeyValue.replace("responsiveVoiceApiKey: ", "");
+      if (apiKey !== null && apiKey !== "") {
+        isResponsiveVoiceApiKeySet = true
+        console.log('Responsive voice enabled);
+        } else {
+          console.log('Responsive voice API key not set, disabled);
+        }
+      }
+    }
+  })
+  .catch(err => {
+    console.warn('Could not load config.yml, defaulting to disbaled responsive voice:', err);
+  });
+
+
 reconnectInterval = setInterval(() => {
     if (isInSiteTrunking && radioOn) {
         connectWebSocket();
@@ -658,27 +680,9 @@ async function powerOn(reReg) {
             await displayBootScreen(bootScreenMessages);
         }
 
-        if (!isScannerModel() && currentCodeplug.isAnnounceZoneChannelTalkgroups === true) {
-            fetch('/configs/config.yml')
-              .then(response => response.text())
-              .then(yamlText => {
-                const lines = yamlText.split('\n');
-                for (const line of lines) {
-                  const matchApiKey = line.match(/^\s*responsiveVoiceApiKey\s*:\s+\S*$/i);
-                  const apiKey = matchApiKey.replace("responsiveVoiceApiKey: ", "")
-                  if (apiKey !== null && apiKey !== "") {
-                    responsiveVoice.speak(`${currentZone.name_announce}`, `US English Female`, {rate: .8});
-                    responsiveVoice.speak(`${currentChannel.name_announce}`, `US English Female`, {rate: .8});
-                    return;
-                  } else {
-                      console.error('responsiveVoiceApiKey not set in config.yml);
-                      return;
-                  }
-                }
-              })
-              .catch(err => {
-                console.warn('Could not load config.yml, defaulting to disabled zone/channel announcements:', err);
-              });
+        if (!isScannerModel() && currentCodeplug.isAnnounceZoneChannelTalkgroups === true && isResponsiveVoiceApiKeySet === true) {
+            responsiveVoice.speak(`${currentZone.name_announce}`, `US English Female`, {rate: .8});
+            responsiveVoice.speak(`${currentChannel.name_announce}`, `US English Female`, {rate: .8});
         }
 
         updateDisplay();
