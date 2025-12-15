@@ -928,9 +928,10 @@ function changeChannel(direction) {
         setLine2("Fail 01/82");
     }
 
-    const currentChannel = currentZone.channels[currentChannelIndex];
-
-    responsiveVoice.speak(`${currentChannel.name_announce}`, `US English Female`, {rate: .8});
+    if (currentCodeplug.isAnnounceZoneChannelTalkgroups === true && isResponsiveVoiceApiKeySet === true) {
+        const currentChannel = currentZone.channels[currentChannelIndex];
+        responsiveVoice.speak(`${currentChannel.name_announce}`, `US English Female`, {rate: .8});
+    }
 
     SendGroupAffiliationRemoval(currentTg);
 
@@ -964,11 +965,14 @@ function changeZone(direction) {
     }
 
     currentChannelIndex = 0;
-    const currentZone = currentCodeplug.zones[currentZoneIndex];
-    const currentChannel = currentZone.channels[currentChannelIndex];
 
-    responsiveVoice.speak(`${currentZone.name_announce}`, `US English Female`, {rate: .8});
-    responsiveVoice.speak(`${currentChannel.name_announce}`, `US English Female`, {rate: .8});
+    if (currentCodeplug.isAnnounceZoneChannelTalkgroups === true && isResponsiveVoiceApiKeySet === true) {
+        const currentZone = currentCodeplug.zones[currentZoneIndex];
+        const currentChannel = currentZone.channels[currentChannelIndex];
+        responsiveVoice.speak(`${currentZone.name_announce}`, `US English Female`, {rate: .8});
+        responsiveVoice.speak(`${currentChannel.name_announce}`, `US English Female`, {rate: .8});
+    }
+    
     SendGroupAffiliationRemoval(currentTg);
 
     updateDisplay();
